@@ -1,0 +1,19 @@
+name: Deploy to QA
+
+on:
+  push:
+    branches:
+      - stage
+
+jobs:
+  deploy:
+    runs-on: athena-deployer
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # TODO: Build Docker image
+      # TODO: Push to container registry
+      # TODO: Deploy to QA environment
+      # TODO: Verify deployment health

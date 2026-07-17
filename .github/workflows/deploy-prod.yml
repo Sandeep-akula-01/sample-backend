@@ -1,0 +1,17 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: athena-deployer
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # TODO: Build Docker image
+      # TODO: Push to container registry
+      # TODO: Deploy to production environment
+      # TODO: Verify deployment health
