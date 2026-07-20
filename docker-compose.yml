@@ -1,3 +1,4 @@
+cat > docker-compose.yml <<'EOF'
 services:
   db:
     image: postgres:16-alpine
@@ -18,7 +19,7 @@ services:
       retries: 5
 
   api:
-    build: .
+    image: sample-backend-api:${IMAGE_TAG:-latest}
     container_name: sample-backend
     restart: unless-stopped
     depends_on:
@@ -44,3 +45,4 @@ services:
 
 volumes:
   pgdata:
+EOF
