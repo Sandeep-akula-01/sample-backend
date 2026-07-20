@@ -1,4 +1,4 @@
-name: Deploy to QA
+name: Deploy Backend to QA
 
 on:
   push:
@@ -7,13 +7,38 @@ on:
 
 jobs:
   deploy:
-    runs-on: athena-deployer
+    runs-on:
+      - self-hosted
+      - backend
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # TODO: Build Docker image
-      # TODO: Push to container registry
-      # TODO: Deploy to QA environment
-      # TODO: Verify deployment health
+      - name: Build Docker Image
+        run: |
+          docker build -t sample-backend-api:latest .
+
+      - name: Save Docker Image
+        run: |
+          docker save sample-backend-api:latest -o sample-backend-api.tar
+
+      - name: Copy image to QA
+        run: |
+          scp -o StrictHostKeyChecking=no \
+            sample-backend-api.tar \
+            ubuntu@10.0.128.115:/opt/sample-backend/
+
+      - name: Deploy on QA
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@10.0.128.115 << 'EOF'
+            cd /opt/sample-backend
+            docker load -i sample-backend-api.tar
+            docker compose up -d --force-recreate
+            docker image prune -f
+          EOF
+
+      - name: Health Check
+        run: |
+          ssh ubuntu@10.0.128.115 \
+          "curl -f http://localhost:8000/api/v1/health"
