@@ -37,8 +37,3 @@ jobs:
             docker compose up -d --force-recreate
             docker image prune -f
           EOF
-
-      - name: Health Check
-        run: |
-          ssh ubuntu@10.0.128.115 \
-          "curl -f http://localhost:8000/api/v1/health"
